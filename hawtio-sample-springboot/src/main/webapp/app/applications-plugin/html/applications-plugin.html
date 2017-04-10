@@ -1,0 +1,23 @@
+<div ng-controller="ApplicationsPlugin.ApplicationsPluginController">
+
+	<div class="row-fluid">
+		<h1>Applications Status</h1>
+		<table>
+			<thead>
+				<tr>
+					<td>Name</td>
+					<td>CPU</td>
+					<td>Heap</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="app in applications">
+					<td>{{app.name}}</td>
+					<td>{{app.cpu}}</td>
+					<td>{{app.heap}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+</div>
