@@ -8,6 +8,7 @@
 					<td>Name</td>
 					<td>CPU</td>
 					<td>Heap</td>
+					<td>Connect</td>
 				</tr>
 			</thead>
 			<tbody>
@@ -15,6 +16,7 @@
 					<td>{{app.name}}</td>
 					<td>{{app.cpu}}</td>
 					<td>{{app.heap}}</td>
+					<td><input type="button" value="connect" ng-click="connect(app);"></td>
 				</tr>
 			</tbody>
 		</table>

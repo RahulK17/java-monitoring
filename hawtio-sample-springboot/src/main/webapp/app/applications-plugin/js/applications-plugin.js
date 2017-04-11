@@ -29,11 +29,11 @@ var ApplicationsPlugin = (function(ApplicationsPlugin) {
 
   });
 
-	ApplicationsPlugin.ApplicationsPluginController = function($scope, $http) {
+	ApplicationsPlugin.ApplicationsPluginController = function($scope, $http, localStorage) {
 	
 		// connect link click function
-		$scope.connect = function(){
-			
+		$scope.connect = function(app){
+			Core.connectToServer(localStorage, Core.getConnectOptions(app.name));
 		};
 		
 		$http.get("/hawtio/custom/applications-status").then(
@@ -56,9 +56,6 @@ var ApplicationsPlugin = (function(ApplicationsPlugin) {
     		});
 		Core.$apply($scope); 
     
-    
-    
-    
 		function newConfig(schm, hst, prt, pth, uname, passwd) {
 	        return Core.createConnectOptions({
 	            scheme: schm,
@@ -68,8 +65,8 @@ var ApplicationsPlugin = (function(ApplicationsPlugin) {
 	            userName: uname,
 	            password: passwd
 	        });
-  };
-
+		};
+	}
   return ApplicationsPlugin;
 
 })(ApplicationsPlugin || {});
