@@ -64,6 +64,13 @@
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>capi</groupId>
+			<artifactId>ojdbc7</artifactId>
+			<version>1</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

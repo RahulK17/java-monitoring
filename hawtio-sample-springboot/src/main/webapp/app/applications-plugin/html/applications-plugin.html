@@ -1,8 +1,8 @@
-<div ng-controller="ApplicationsPlugin.ApplicationsPluginController">
+<div class="container" ng-controller="ApplicationsPlugin.ApplicationsPluginController">
 
 	<div class="row-fluid">
 		<h1>Applications Status</h1>
-		<table>
+		<table class="table table-striped">
 			<thead>
 				<tr>
 					<td>Name</td>
@@ -16,7 +16,8 @@
 					<td>{{app.name}}</td>
 					<td>{{app.cpu}}</td>
 					<td>{{app.heap}}</td>
-					<td><input type="button" value="connect" ng-click="connect(app);"></td>
+					<td><input type="button" value="connect"
+						ng-click="connect(app.name);"></td>
 				</tr>
 			</tbody>
 		</table>

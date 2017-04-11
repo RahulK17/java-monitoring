@@ -21,9 +21,9 @@ var ApplicationsPlugin = (function(ApplicationsPlugin) {
       id: "ApplicationsPlugin",
       content: "Applications",
       title: "Applications Monitored",
-      isValid: function() { return true; },
+      isValid: function() { if(window.opener) { return false; } return true; },
       href: function() { return "#/applications-plugin"; },
-      isActive: function() { return true; }
+      isActive: function() { if(window.opener) { return false; } return true; }
 
     });
 
@@ -32,8 +32,9 @@ var ApplicationsPlugin = (function(ApplicationsPlugin) {
 	ApplicationsPlugin.ApplicationsPluginController = function($scope, $http, localStorage) {
 	
 		// connect link click function
-		$scope.connect = function(app){
-			Core.connectToServer(localStorage, Core.getConnectOptions(app.name));
+		$scope.connect = function(name){
+			ApplicationsPlugin.log.info("Connecing to "+name);
+			Core.connectToServer(localStorage, Core.getConnectOptions(name));
 		};
 		
 		$http.get("/hawtio/custom/applications-status").then(
@@ -42,9 +43,10 @@ var ApplicationsPlugin = (function(ApplicationsPlugin) {
     			var connectionMap = Core.loadConnectionMap();
     			for(var i=0, l=response.data.length;i<l;i++){
     				var item = response.data[i];
-    				connectionMap[item.name] = newConfig(item.application.scheme,item.application.hostName,
+    				connectionMap[item.name] = newConnectionConfig(item.application.scheme,item.application.hostName,
     						item.application.jmxPort,item.application.jolokiaPath,item.application.jmxUsername,
-    						item.application.jmxPassword);
+    						item.application.jmxPassword,item.name,"#/");
+    				
     			}
     			
     			// save connection map
@@ -56,14 +58,16 @@ var ApplicationsPlugin = (function(ApplicationsPlugin) {
     		});
 		Core.$apply($scope); 
     
-		function newConfig(schm, hst, prt, pth, uname, passwd) {
+		function newConnectionConfig(schm, hst, prt, pth, uname, passwd, nme, vw) {
 	        return Core.createConnectOptions({
 	            scheme: schm,
 	            host: hst,
 	            path: pth,
 	            port: prt,
 	            userName: uname,
-	            password: passwd
+	            password: passwd,
+	            name: nme,
+	            view: vw
 	        });
 		};
 	}
@@ -72,3 +76,9 @@ var ApplicationsPlugin = (function(ApplicationsPlugin) {
 })(ApplicationsPlugin || {});
 
 hawtioPluginLoader.addModule(ApplicationsPlugin.pluginName);
+
+
+Core.saveConnection = function(){
+	var connectionMap = Core.loadConnectionMap();
+	Core.saveConnectionMap(connectionMap);
+}

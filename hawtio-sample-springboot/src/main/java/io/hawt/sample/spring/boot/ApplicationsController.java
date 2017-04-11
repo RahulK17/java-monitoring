@@ -31,9 +31,9 @@ public class ApplicationsController {
 			status.application = app; // for connect option in ui
 			status.name = app.name;
 			status.cpu = String
-					.valueOf(helper.getCpuUsage(app));
+					.valueOf((int)(helper.getCpuUsage(app)*100));
 			status.heap = String
-					.valueOf(helper.getHeapMemoryUsage(app));
+					.valueOf((int)(helper.getHeapMemoryUsage(app)*100));
 			statuses.add(status);
 		}
 		return statuses;
