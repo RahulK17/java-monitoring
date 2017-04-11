@@ -1,0 +1,23 @@
+<div ng-controller="AlertPlugin.AlertPluginController">
+
+	<div class="row-fluid">
+		<h1>Check Status</h1>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<td>Application</td>
+					<td>LogMessage</td>
+					<td>Status</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="alert in alerts">
+					<td>{{alert.application}}</td>
+					<td>{{alert.logMessage}}</td>
+					<td>{{alert.resolvedStatus}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+</div>

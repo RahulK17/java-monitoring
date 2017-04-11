@@ -43,6 +43,11 @@ public class SampleSpringBootService {
 		return new HawtPlugin("applications-plugin", "/hawtio/plugins", "", new String[] { "applications-plugin/js/applications-plugin.js" });
 	}
 	
+	@Bean
+	public HawtPlugin alertPlugin() {
+		return new HawtPlugin("alert-plugin", "/hawtio/plugins", "", new String[] { "alert-plugin/js/alert-plugin.js" });
+	}
+	
 	/**
 	 * Set things up to be in offline mode
 	 * @return

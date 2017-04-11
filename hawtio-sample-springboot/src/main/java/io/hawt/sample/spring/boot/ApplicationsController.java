@@ -38,5 +38,11 @@ public class ApplicationsController {
 		}
 		return statuses;
 	}
+	
+	@RequestMapping("/hawtio/custom/alert-status")
+	public @ResponseBody List<Alert> getAlerts(){
+		List<Alert> alertsList= dao.listAlerts();
+		return alertsList;
+	}
 
 }
