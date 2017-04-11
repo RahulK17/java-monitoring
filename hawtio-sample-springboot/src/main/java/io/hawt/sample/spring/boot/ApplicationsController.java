@@ -28,11 +28,12 @@ public class ApplicationsController {
 		List<ApplicationStatus> statuses = new ArrayList<ApplicationStatus>();
 		for (Application app : apps) {
 			ApplicationStatus status = new ApplicationStatus();
+			status.application = app; // for connect option in ui
 			status.name = app.name;
 			status.cpu = String
-					.valueOf(helper.getCpuUsage(app.hostName, app.jmxPort, app.jmxUsername, app.jmxPassword));
+					.valueOf(helper.getCpuUsage(app));
 			status.heap = String
-					.valueOf(helper.getHeapMemoryUsage(app.hostName, app.jmxPort, app.jmxUsername, app.jmxPassword));
+					.valueOf(helper.getHeapMemoryUsage(app));
 			statuses.add(status);
 		}
 		return statuses;

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApplicationsDao {
 
-	public static final String LIST = "select application 'name', host_name 'hostName', jmx_port 'jmxPart', jmx_username 'jmxUsername', jmx_password 'jmxPassword' from monitoring_applications";
+	public static final String LIST = "select application, scheme, host_name, jmx_port, jolokia_path, jmx_username, jmx_password from monitoring_applications";
 	
 	@Autowired
 	NamedParameterJdbcTemplate template;
@@ -27,10 +27,12 @@ public class ApplicationsDao {
 			public Application mapRow(ResultSet rs, int rowNum) throws SQLException {
 				Application app = new Application();
 				app.name = rs.getString(1);
-				app.hostName = rs.getString(2);
-				app.jmxPort = rs.getString(3);
-				app.jmxUsername = rs.getString(4);
-				app.jmxPassword = rs.getString(5);
+				app.scheme = rs.getString(2);
+				app.hostName = rs.getString(3);
+				app.jmxPort = rs.getString(4);
+				app.jolokiaPath = rs.getString(5);
+				app.jmxUsername = rs.getString(6);
+				app.jmxPassword = rs.getString(7);
 				apps.add(app);
 				return app;
 			}

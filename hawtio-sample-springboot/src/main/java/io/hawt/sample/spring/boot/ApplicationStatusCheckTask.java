@@ -24,11 +24,11 @@ public class ApplicationStatusCheckTask {
 		System.out.println("********* task ***********");
 		List<Application> apps = dao.listApplications();
 		for(Application app: apps){
-			Double cpu= helper.getCpuUsage(app.hostName, app.jmxPort, app.jmxUsername, app.jmxPassword);
+			Double cpu= helper.getCpuUsage(app);
 			if(cpu > 0.05){
 				LOGGER.error("{} is under high cpu usage", app.name);
 			}
-			Double heap= helper.getHeapMemoryUsage(app.hostName, app.jmxPort, app.jmxUsername, app.jmxPassword);
+			Double heap= helper.getHeapMemoryUsage(app);
 			if(heap < 0.5){
 				LOGGER.error("{} is under high heap usage", app.name);
 			}

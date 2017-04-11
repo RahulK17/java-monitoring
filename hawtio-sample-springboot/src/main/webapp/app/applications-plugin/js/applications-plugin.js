@@ -30,11 +30,44 @@ var ApplicationsPlugin = (function(ApplicationsPlugin) {
   });
 
 	ApplicationsPlugin.ApplicationsPluginController = function($scope, $http) {
-    $http.get("/hawtio/custom/applications-status").then(
+	
+		// connect link click function
+		$scope.connect = function(){
+			
+		};
+		
+		$http.get("/hawtio/custom/applications-status").then(
     		function(response){
+    			// load connection map from local storage
+    			var connectionMap = Core.loadConnectionMap();
+    			for(var i=0, l=response.data.length;i<l;i++){
+    				var item = response.data[i];
+    				connectionMap[item.name] = newConfig(item.application.scheme,item.application.hostName,
+    						item.application.jmxPort,item.application.jolokiaPath,item.application.jmxUsername,
+    						item.application.jmxPassword);
+    			}
+    			
+    			// save connection map
+    			Core.saveConnectionMap(connectionMap);
+    			
+    			//update the table
     			$scope.applications = response.data;
+    			
     		});
-    Core.$apply($scope);    
+		Core.$apply($scope); 
+    
+    
+    
+    
+		function newConfig(schm, hst, prt, pth, uname, passwd) {
+	        return Core.createConnectOptions({
+	            scheme: schm,
+	            host: hst,
+	            path: pth,
+	            port: prt,
+	            userName: uname,
+	            password: passwd
+	        });
   };
 
   return ApplicationsPlugin;

@@ -4,4 +4,5 @@ public class ApplicationStatus {
 	public String name;
 	public String cpu;
 	public String heap;
+	public Application application;
 }
