@@ -13,7 +13,7 @@ var ApplicationsPlugin = (function(ApplicationsPlugin) {
             });
       });
 
-	ApplicationsPlugin.module.run(function(workspace, viewRegistry, layoutFull) {
+	ApplicationsPlugin.module.run(function(workspace, viewRegistry, layoutFull, locationChangeStartTasks, $timeout) {
 
 	ApplicationsPlugin.log.info(ApplicationsPlugin.pluginName, " loaded");
     viewRegistry["applications-plugin"] = layoutFull;
@@ -26,10 +26,23 @@ var ApplicationsPlugin = (function(ApplicationsPlugin) {
       isActive: function() { if(window.opener) { return false; } return true; }
 
     });
+    
+    locationChangeStartTasks.addTask('RefreshApplications',function(event, newUrl, oldUrl){
+    	if(oldUrl.endsWith('applications-plugin')){
+    		ApplicationsPlugin.log.info('Cancelling Refresh on applications list');
+    		$timeout.cancel(ApplicationsPlugin.future.get());
+    	}
+    })
 
   });
-
-	ApplicationsPlugin.ApplicationsPluginController = function($scope, $http, localStorage) {
+	var futre;
+	
+	ApplicationsPlugin.future = {
+		get: function() { return futre; },
+		set: function(future) { futre = future; }
+	};
+	
+	ApplicationsPlugin.ApplicationsPluginController = function($scope, $http, localStorage, $timeout) {
 	
 		// connect link click function
 		$scope.connect = function(name){
@@ -37,25 +50,9 @@ var ApplicationsPlugin = (function(ApplicationsPlugin) {
 			Core.connectToServer(localStorage, Core.getConnectOptions(name));
 		};
 		
-		$http.get("/hawtio/custom/applications-status").then(
-    		function(response){
-    			// load connection map from local storage
-    			var connectionMap = Core.loadConnectionMap();
-    			for(var i=0, l=response.data.length;i<l;i++){
-    				var item = response.data[i];
-    				connectionMap[item.name] = newConnectionConfig(item.application.scheme,item.application.hostName,
-    						item.application.jmxPort,item.application.jolokiaPath,item.application.jmxUsername,
-    						item.application.jmxPassword,item.name,"#/");
-    				
-    			}
-    			
-    			// save connection map
-    			Core.saveConnectionMap(connectionMap);
-    			
-    			//update the table
-    			$scope.applications = response.data;
-    			
-    		});
+		refreshApplications($http, $scope, $timeout);
+		
+		
 		Core.$apply($scope); 
     
 		function newConnectionConfig(schm, hst, prt, pth, uname, passwd, nme, vw) {
@@ -70,13 +67,43 @@ var ApplicationsPlugin = (function(ApplicationsPlugin) {
 	            view: vw
 	        });
 		};
+		
+		function refreshApplications($http, $scope, $timeout){
+			ApplicationsPlugin.log.info('Refreshing applications list');
+			$http.get("/hawtio/custom/applications-status").then(
+		    		function(response){
+		    			// load connection map from local storage
+		    			var connectionMap = Core.loadConnectionMap();
+		    			for(var i=0, l=response.data.length;i<l;i++){
+		    				var item = response.data[i];
+		    				connectionMap[item.name] = newConnectionConfig(item.application.scheme,item.application.hostName,
+		    						item.application.jmxPort,item.application.jolokiaPath,item.application.jmxUsername,
+		    						item.application.jmxPassword,item.name,"#/");
+		    				
+		    			}
+		    			
+		    			// save connection map
+		    			Core.saveConnectionMap(connectionMap);
+		    			
+		    			//update the table
+		    			$scope.applications = response.data;
+		    			
+		    			ApplicationsPlugin.future.set(
+		    					$timeout(
+		    							function(){
+		    								refreshApplications($http, $scope, $timeout);
+		    							},
+		    							3000
+		    					));
+		    			
+		    		});
+		}
 	}
   return ApplicationsPlugin;
 
 })(ApplicationsPlugin || {});
 
 hawtioPluginLoader.addModule(ApplicationsPlugin.pluginName);
-
 
 Core.saveConnection = function(){
 	var connectionMap = Core.loadConnectionMap();
