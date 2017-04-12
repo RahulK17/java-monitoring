@@ -33,7 +33,7 @@ var ApplicationsPlugin = (function(ApplicationsPlugin) {
     		$timeout.cancel(ApplicationsPlugin.future.get());
     	}
     })
-
+ 
   });
 	var futre;
 	
